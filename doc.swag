@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  description: A simple Todo API to manage tasks.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/todos
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+paths:
+  /:
+    get:
+      summary: Get all Todos
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of todos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                example:
+                  id: 202201483
+                  name: Mahmoud Elgendy
+        '401':
+          description: Unauthorized token
+        '404':
+          description: Resource not found
+
+    post:
+      summary: Create a new Todo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                completed:
+                  type: boolean
+              example:
+                title: "Learn Flask"
+                completed: false
+      responses:
+        '201':
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  completed:
+                    type: boolean
+                example:
+                  id: 1
+                  title: "Learn Flask"
+                  completed: false
+        '401':
+          description: Unauthorized token
+
+  /{id}:
+    put:
+      summary: Update a Todo by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                completed:
+                  type: boolean
+              example:
+                title: "Learn Python"
+                completed: true
+      responses:
+        '200':
+          description: Todo updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  completed:
+                    type: boolean
+                example:
+                  id: 1
+                  title: "Learn Python"
+                  completed: true
+        '401':
+          description: Unauthorized token
+        '404':
+          description: Todo not found
+
+    delete:
+      summary: Delete a Todo by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Todo deleted successfully
+        '401':
+          description: Unauthorized token
+        '404':
+          description: Todo not found
